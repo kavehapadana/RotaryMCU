@@ -1,0 +1,26 @@
+--cpu Cortex-M3
+"..\build\main.o"
+"..\build\messaging.o"
+"..\build\pid.o"
+"..\build\user_gpio.o"
+"..\build\user_uart.o"
+"..\build\user_extint.o"
+"..\build\user_delay.o"
+"..\build\messaging_rssi_sum.o"
+"..\build\messaging_rssi_delta.o"
+"..\build\lpc17xx_clkpwr.o"
+"..\build\lpc17xx_exti.o"
+"..\build\lpc17xx_gpio.o"
+"..\build\lpc17xx_mcpwm.o"
+"..\build\lpc17xx_nvic.o"
+"..\build\lpc17xx_pinsel.o"
+"..\build\lpc17xx_timer.o"
+"..\build\lpc17xx_uart.o"
+"..\build\lpc17xx_libcfg_default.o"
+"..\build\lpc17xx_systick.o"
+"..\build\startup_lpc17xx.o"
+"..\build\system_lpc17xx.o"
+--library_type=microlib --strict --scatter "..\Build\Rotatory_MCU.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Rotatory_MCU.map" -o ..\Build\Rotatory_MCU.axf
