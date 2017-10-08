@@ -421,11 +421,10 @@ ARM Macro Assembler    Page 7
               00000000 
               00000000 
 Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=..\build
-\startup_lpc17xx.d -o..\build\startup_lpc17xx.o -ID:\project\sharifSatSim\Groun
-dStation_MCU\Rotatory_MCU_1Dupp_Armand\Project_Files\RTE -ID:\install\Keil_v5\A
-RM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include -ID:\install\Keil_v5\ARM\PACK\Keil\LPC17
-00_DFP\1.0.0\Device\Include --predefine="__MICROLIB SETA 1" --list=.\startup_lp
-c17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
+\startup_lpc17xx.d -o..\build\startup_lpc17xx.o -IE:\Gits\RotaryMCU\Project_Fil
+es\RTE -ID:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include -ID:\instal
+l\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include --predefine="__MICROLI
+B SETA 1" --list=.\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
 
 
 
