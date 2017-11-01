@@ -1,5 +1,5 @@
 Dependencies for Project 'Rotatory_MCU', Target 'Rotatory_MCU': (DO NOT MODIFY !)
-F (..\User\main.c)(0x59D8CA24)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\Drivers\include -I.\RTE\Device\LPC1768 -I..\User-I E:\Gits\RotaryMCU\Project_Files\RTE-I D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include-D_RTE_ -DLPC1700 -o ..\build\main.o --omf_browse ..\build\main.crf --depend ..\build\main.d)
+F (..\User\main.c)(0x59F870B3)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\Drivers\include -I.\RTE\Device\LPC1768 -I..\User-I E:\Gits\RotaryMCU\Project_Files\RTE-I D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include-D_RTE_ -DLPC1700 -o ..\build\main.o --omf_browse ..\build\main.crf --depend ..\build\main.d)
 I (..\User\lpc17xx_libcfg.h)(0x4FBFF31A)
 I (..\Drivers\include\lpc_types.h)(0x4FBFF309)
 I (D:\install\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5284A562)
@@ -27,6 +27,7 @@ I (..\User\main.h)(0x59537F50)
 I (..\User\User_Delay.h)(0x58C3AA22)
 I (..\User\Messaging_RSSI_SUM.h)(0x59A3EC9F)
 I (..\User\Messaging_RSSI_Delta.h)(0x59A3EE86)
+I (..\User\lpc17xx_wdt.h)(0x4F3CD6F6)
 F (..\User\Messaging.c)(0x59C3A841)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\Drivers\include -I.\RTE\Device\LPC1768 -I..\User-I E:\Gits\RotaryMCU\Project_Files\RTE-I D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include-D_RTE_ -DLPC1700 -o ..\build\messaging.o --omf_browse ..\build\messaging.crf --depend ..\build\messaging.d)
 I (..\User\Messaging.h)(0x59D67AEC)
 I (D:\install\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5284A562)
@@ -139,6 +140,18 @@ I (D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include\core_cmInstr.h)(0x
 I (D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include\core_cmFunc.h)(0x512C5DAA)
 I (D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include\system_LPC17xx.h)(0x4DA51CA4)
 I (..\Drivers\include\lpc_types.h)(0x4FBFF309)
+F (..\User\lpc17xx_wdt.c)(0x4F3CD6F6)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\Drivers\include -I.\RTE\Device\LPC1768 -I..\User-I E:\Gits\RotaryMCU\Project_Files\RTE-I D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include-D_RTE_ -DLPC1700 -o ..\build\lpc17xx_wdt.o --omf_browse ..\build\lpc17xx_wdt.crf --depend ..\build\lpc17xx_wdt.d)
+I (..\User\lpc17xx_wdt.h)(0x4F3CD6F6)
+I (D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include\LPC17xx.h)(0x4FF52F30)
+I (D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include\core_cm3.h)(0x512C5DAA)
+I (D:\install\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5284A562)
+I (D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include\core_cmInstr.h)(0x51BA94AC)
+I (D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include\core_cmFunc.h)(0x512C5DAA)
+I (D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include\system_LPC17xx.h)(0x4DA51CA4)
+I (..\Drivers\include\lpc_types.h)(0x4FBFF309)
+I (..\Drivers\include\lpc17xx_clkpwr.h)(0x4FBFF308)
+I (..\Drivers\include\lpc17xx_pinsel.h)(0x4FBFF308)
+I (..\Drivers\include\lpc17xx_libcfg_default.h)(0x4FBFF308)
 F (..\Drivers\source\lpc17xx_clkpwr.c)(0x4FBFF309)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork -I..\Drivers\include -I.\RTE\Device\LPC1768 -I..\User-I E:\Gits\RotaryMCU\Project_Files\RTE-I D:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include-I D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include-D_RTE_ -DLPC1700 -o ..\build\lpc17xx_clkpwr.o --omf_browse ..\build\lpc17xx_clkpwr.crf --depend ..\build\lpc17xx_clkpwr.d)
 I (..\Drivers\include\lpc17xx_clkpwr.h)(0x4FBFF308)
 I (D:\install\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include\LPC17xx.h)(0x4FF52F30)

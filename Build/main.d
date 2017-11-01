@@ -27,3 +27,4 @@
 ..\build\main.o: ..\User\User_Delay.h
 ..\build\main.o: ..\User\Messaging_RSSI_SUM.h
 ..\build\main.o: ..\User\Messaging_RSSI_Delta.h
+..\build\main.o: ..\User\lpc17xx_wdt.h

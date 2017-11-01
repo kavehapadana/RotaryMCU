@@ -399,11 +399,6 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>ADC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\ADC.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\main.c</FilePath>
@@ -427,16 +422,6 @@
               <FileName>User_Uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\User_Uart.c</FilePath>
-            </File>
-            <File>
-              <FileName>User_ADC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\User\User_ADC.c</FilePath>
-            </File>
-            <File>
-              <FileName>lpc17xx_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\source\lpc17xx_adc.c</FilePath>
             </File>
             <File>
               <FileName>User_ExtInt.c</FileName>
