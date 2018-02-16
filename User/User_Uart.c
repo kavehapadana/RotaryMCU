@@ -371,7 +371,7 @@ uint32_t UARTReceive(LPC_UART_TypeDef *UARTx, uint8_t *rxbuf, uint8_t buflen)
 	/* Temporarily lock out UART receive interrupts during this
 	   read so the UART receive interrupt won't cause problems
 	   with the index values */
-	UART_IntConfig(UARTx, UART_INTCFG_RBR, DISABLE);
+		UART_IntConfig(UARTx, UART_INTCFG_RBR, DISABLE);
 
 	/* Loop until receive buffer ring is empty or
 		until max_bytes expires */

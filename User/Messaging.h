@@ -67,6 +67,9 @@ typedef enum
 	RotMCU_HighDelta,
 	RotMCU_LowDelta,
 	RotMCU_SelectDelta,
-	RotMCU_SelectSLC	
+	RotMCU_SelectSLC,
+	RotMCU_SelectSharifSat_Freq,
+	RotMCU_SelectIndianSat_Freq,
+	RotMCU_Freq
 } RotMCU_ID_t;
 extern RotMCU_ID_t	RotMCU_msg_ID;

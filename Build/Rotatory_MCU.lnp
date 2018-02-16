@@ -9,6 +9,7 @@
 "..\build\messaging_rssi_sum.o"
 "..\build\messaging_rssi_delta.o"
 "..\build\lpc17xx_wdt.o"
+"..\build\messaging_freq.o"
 "..\build\lpc17xx_clkpwr.o"
 "..\build\lpc17xx_exti.o"
 "..\build\lpc17xx_gpio.o"

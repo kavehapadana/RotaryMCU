@@ -25,6 +25,7 @@
 #include "User_Delay.h"
 #include "Messaging_RSSI_SUM.h"
 #include "Messaging_RSSI_Delta.h"
+#include "Messaging_Freq.h"
 #include "lpc17xx_wdt.h"
 
 //timer init
@@ -32,12 +33,12 @@ TIM_TIMERCFG_Type TIM_ConfigStruct;
 TIM_MATCHCFG_Type TIM_MatchConfigStruct ;
 uint8_t volatile timer0_flag = FALSE, timer1_flag = FALSE;
 FunctionalState LEDStatus = ENABLE;
-
 /************************** PRIVATE FUNCTION *************************/
 /* Interrupt service routine */
 void TIMER0_IRQHandler(void);
 void UART0_IRQHandler(void);
 void IO_InitUnUsedPins(void);
+void IO_Initialling(void);
 
 #ifdef GLOBAL_BOARD
 // Declare Push Button Pins
@@ -66,6 +67,8 @@ pin DOut_4 = {3,25,1};
 pin RSSI_SUM_Serial_GPIO = {0,0,1};
 pin RSSI_DeltaSLC_Serial_GPIO = {0,10,1};
 	
+//pin Set_Frequency_LNB = {0,2,1};
+//pin Get_Frequency_LNB = {0,3,0};
 
 //Declare WatchDog Error 2 Sec
 #define WDT_TIMEOUT 2000000
@@ -123,6 +126,12 @@ pin UnUseP3_26 = {3,26,1};
 #endif
 #ifdef IMPORTANT_VAR
 
+#define COM_RF_PRIORITY				22
+#define COM_SUM_PRIORITY			21
+#define COM_DELTA_PRIORITY		20
+#define COM_FREQ_PRIORITY			19
+#define Timer_0_PRIORITY			23
+
 #define RF_Message_Lenght			9	
 	typedef struct
 	{
@@ -150,12 +159,17 @@ typedef enum
     w_Rot_SUM_Serial_Pin,
     w_Rot_DeltaSLC_Serial_Pin,
     w_Rot_SelectDeltaSLC,
-    e_Not4,
+    w_Rot_Freq,
     e_Not5,
     e_Not6
 } bitwatch_Status_t;
  extern bitwatch_Status_t bitwatch;
 
+typedef enum
+{
+	SharifSat = 0,
+	IndianSat = 1
+} SelectFrequency;
 
 #endif
 #ifdef	VARIABLES
@@ -175,10 +189,10 @@ int tempCnt = 0;
 
 #endif
 #ifdef USRATS_DEFINES
-#define UART_MS            		  		UART1 
-#define UART_LPC_MS             		LPC_UART1
-#define UART_MS_BAUDRATE   					19200
-#define	UART_MS_IRQHandler	 				UART1_IRQHandler
+#define UART_RF            		  		UART1 
+#define UART_LPC_RF             		LPC_UART1
+#define UART_RF_BAUDRATE   					19200
+#define	UART_RF_IRQHandler	 				UART1_IRQHandler
 
 #define UART_FPGA_SUM            		UART3 
 #define UART_LPC_FPGA_SUM         	LPC_UART3
@@ -192,9 +206,8 @@ int tempCnt = 0;
 
 #define UART_SetFreq            		UART0
 #define UART_LPC_SetFreq         		LPC_UART0
-#define UART_SetFreq_BAUDRATE   		9600
+#define UART_SetFreq_BAUDRATE   		1200
 #define	UART_SetFreq_IRQHandler			UART0_IRQHandler
-
 char flgSendSerial = 0;
 
 #endif
@@ -206,22 +219,23 @@ int maxBuff = 300;
 int rcvLen = 0;
 int cntBuffLen = 0;
 int sleepCnt = 10000;
-int dumm=0;
+int dumm = 0;
 uint8_t testDataSUM[100],testDataDelta[100];
 int cntTestSUM,cntTestDelta = 0;
 
+uint8_t testData[100];
 int main(void)
 {
 	WDT_Init(WDT_CLKSRC_IRC, WDT_MODE_RESET);
 	WDT_Start(WDT_TIMEOUT);
-
 	
-	Com_Init(UART_MS,ENABLE,DISABLE,22,UART_MS_BAUDRATE,1);
-  Com_Init_Tx_Canceled(UART_FPGA_SUM,ENABLE,DISABLE,21,UART_FPGA_SUM_BAUDRATE,1);
-  Com_Init_Tx_Canceled(UART_FPGA_Delta,ENABLE,DISABLE,20,UART_FPGA_Delta_BAUDRATE,1);
-  
+	Com_Init(UART_RF,ENABLE,DISABLE,COM_RF_PRIORITY,UART_RF_BAUDRATE,1);
+  Com_Init_Tx_Canceled(UART_FPGA_SUM,ENABLE,DISABLE,COM_SUM_PRIORITY,UART_FPGA_SUM_BAUDRATE,1);
+  Com_Init_Tx_Canceled(UART_FPGA_Delta,ENABLE,DISABLE,COM_DELTA_PRIORITY,UART_FPGA_Delta_BAUDRATE,1);
+  Com_Init(UART_SetFreq,ENABLE,DISABLE,COM_FREQ_PRIORITY,UART_SetFreq_BAUDRATE,1);
+	
 	Init_Timer0();
-	LED_Init();
+	IO_Initialling();
 	// User_ADC_Init(_ADC_CHANNEL, 200000, DISABLE);	
 	// EINT_Init(0, 14);
 	// EINT_Init(1, 15);
@@ -250,9 +264,27 @@ int main(void)
 			parseByte_RSSI_Delta(myData[cntBuffLen]);
 			cntBuffLen++;
 		}
+		
+		rcvLen = UARTReceive(UART_SetFreq,myData,maxBuff);
+		cntBuffLen = 0;
+		while(cntBuffLen < rcvLen)
+		{
+			parseByte_Freq(myData[cntBuffLen]);
+			testData[cntBuffLen] = myData[cntBuffLen];
+			cntBuffLen++;
+		}
+		{
+			int a = 0;
+			a++;
+		}
 	}	
 }
 
+void makeSetFrequencyFormat(char* _formatMSG)
+{
+	char SetFreqFmt[12]="*2170.01@11";
+	
+}
 void parse_Message(uint8_t* msg, uint8_t Message_Length, uint8_t Message_ID)
 {
 	if(Message_ID == RotMCU_ID)
@@ -288,8 +320,32 @@ void parse_Message(uint8_t* msg, uint8_t Message_Length, uint8_t Message_ID)
 				{
 					pinOff(&DOut_4); // piOff means High :-> Digital out_put4 goes to +8 Volt.
 				}
+				case RotMCU_SelectSharifSat_Freq:
+				{
+//					pinOn(&Set_Frequency_LNB);
+				}
+				case RotMCU_SelectIndianSat_Freq:
+				{
+//					pinOff(&Set_Frequency_LNB);
+				}
 				break;
-		}
+				case RotMCU_Freq:
+				{
+						uint8_t MCU_FreqData[20] = {0};
+					{
+						int i = 0;
+						for(i = 0; i < Message_Length - 1; i++)
+						{
+							MCU_FreqData[i] = msg[i+1];
+						}
+					}
+					resetBuffer(MCU_FreqData);	
+					Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,w_Rot_Freq);
+ 					UARTSend(UART_SetFreq,MCU_FreqData,Message_Length - 1);
+
+				}
+				break;
+			}
 	
 		if(msg[0] == msgRecieve_Sync1) // because the Message is Full match with a regular pattern
 		{
@@ -329,7 +385,7 @@ void Init_Timer0(void)
 	// Set configuration for Tim_MatchConfig
 	TIM_ConfigMatch(LPC_TIM0,&TIM_MatchConfigStruct);
 	/* preemption = 1, sub-priority = 1 */
-	NVIC_SetPriority(TIMER0_IRQn, 23);//((0x01<<3)|0x01));
+	NVIC_SetPriority(TIMER0_IRQn, Timer_0_PRIORITY);//((0x01<<3)|0x01));
 	/* Enable interrupt for timer 0 */
 	NVIC_EnableIRQ(TIMER0_IRQn);
 	// To start timer 0
@@ -350,6 +406,14 @@ void parse_Message_RSSI_Delta(char* msg)
 		memcpy(Data_Trans_u.stc.RSSI_Delta_UART_Data,msg,3);
 		cnt_e_com_Delta = 0;	
 		Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,we_Rot_COM_Delta);
+}
+
+void parse_Message_Freq(char* msg)
+{
+	if(msg[40]==0xbf && msg[41]==0x1a)
+		Data_Trans_u.stc.bitWatch = setMask(Data_Trans_u.stc.bitWatch,w_Rot_Freq);
+	else
+		Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,w_Rot_Freq);
 }
 
 
@@ -494,9 +558,9 @@ void Trans_2FixedMic_Message(void)
 		if(cntTestSUM == 99)
 			cntTestSUM = 0;
 		
-		UARTSend(UART_MS, Make_Trans_Msg(msgTrans_RF_ID,Data_Trans_u.Trans_MSG_RF_Array,RF_Message_Lenght), (RF_Message_Lenght + HeaderMSG));
+		UARTSend(UART_RF, Make_Trans_Msg(msgTrans_RF_ID,Data_Trans_u.Trans_MSG_RF_Array,RF_Message_Lenght), (RF_Message_Lenght + HeaderMSG));
 }
-void LED_Init(void)
+void IO_Initialling(void)
 {
   pinConfig(&LED_1);
   pinConfig(&LED_2);
@@ -514,6 +578,9 @@ void LED_Init(void)
 	pinConfig(&RSSI_SUM_Serial_GPIO);
 	pinConfig(&RSSI_DeltaSLC_Serial_GPIO);
 	
+//	pinConfig(&Set_Frequency_LNB);
+//	pinConfig(&Get_Frequency_LNB);
+	
   pinOn(&LED_1);
   pinOn(&LED_2); // For 1 Hz LED 
   pinOn(&LED_3);
@@ -524,11 +591,14 @@ void LED_Init(void)
   pinOn(&LED_8); // Recieve Data RSSI_Delta 
 	
 	pinOff(&DOut_4); // Select Delta
+	
+//	pinOn(&Set_Frequency_LNB);
 }
 
 /*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 #ifdef INTERRUPT_HANDLERS
 //int32_t voltage_value;
+int status = 0;
 void TIMER0_IRQHandler(void)
 {
 	if (TIM_GetIntStatus(LPC_TIM0, TIM_MR0_INT)== SET)
@@ -537,13 +607,25 @@ void TIMER0_IRQHandler(void)
 	TIM_ClearIntPending(LPC_TIM0, TIM_MR0_INT);
 	Cnt_timer0++;
 	WDT_Feed();
-	if(Cnt_timer0 == 125)
+//	status = (uint8_t)pinStatus(&Get_Frequency_LNB);
+//	if(!(Cnt_timer0 % 3750))
+//	{
+//		uint8_t checkAlive[20] = {0};
+
+//		UARTSend(UART_SetFreq,MCU_FreqData,Message_Length - 1);
+//	}
+	
+	if(!(Cnt_timer0++ % 125))
 	{		
 		dataSendCnt = 0;
-		Cnt_timer0 = 0;
+		//Cnt_timer0 = 0;
 		pinToggle(&LED_2);
-		
+//	pinToggle(&Set_Frequency_LNB);
 		cnt_e_com_SUM++;
+		{
+//			uint8_t SetFreqFmt[12]="*2170.01@11#";
+//			UARTSend(UART_SetFreq,SetFreqFmt,12);			
+		}	
 		if(cnt_e_com_SUM == 2)
 		{
 			cnt_e_com_SUM = 0;
@@ -570,24 +652,29 @@ void TIMER0_IRQHandler(void)
 			Data_Trans_u.stc.bitWatch = setMask(Data_Trans_u.stc.bitWatch,w_Rot_SelectDeltaSLC);
 		else
 			Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,w_Rot_SelectDeltaSLC);
-
+		
+//		if(pinStatus(&Set_Frequency_LNB))
+//			Data_Trans_u.stc.bitWatch = setMask(Data_Trans_u.stc.bitWatch,w_Rot_Sharif_Indian_Freq);
+//		else
+//			Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,w_Rot_Sharif_Indian_Freq);
+		
 		}
 	Data_Trans_u.stc.Interrupt_Bits = !(uint8_t)pinStatus(&ExIntPin0); // not is because of the Max in line
 	flgSendSerial = 1;			
 }
 
-void UART_MS_IRQHandler(void)
+void UART_RF_IRQHandler(void)
 {
 	uint32_t intsrc, tmp, tmp1;
 
 	/* Determine the interrupt source */
-	intsrc = UART_GetIntId((LPC_UART_TypeDef *)UART_LPC_MS);
+	intsrc = UART_GetIntId((LPC_UART_TypeDef *)UART_LPC_RF);
 	tmp = intsrc & UART_IIR_INTID_MASK;
 
 	// Receive Line Status
 	if (tmp == UART_IIR_INTID_RLS){
 		// Check line status
-		tmp1 = UART_GetLineStatus((LPC_UART_TypeDef *)UART_LPC_MS);
+		tmp1 = UART_GetLineStatus((LPC_UART_TypeDef *)UART_LPC_RF);
 		// Mask out the Receive Ready and Transmit Holding empty status
 		tmp1 &= (UART_LSR_OE | UART_LSR_PE | UART_LSR_FE \
 				| UART_LSR_BI | UART_LSR_RXFE);
@@ -599,8 +686,8 @@ void UART_MS_IRQHandler(void)
 
 	// Receive Data Available or Character time-out
 	if ((tmp == UART_IIR_INTID_RDA) || (tmp == UART_IIR_INTID_CTI)){
-	if ((((LPC_UART_TypeDef *)UART_MS)->LSR & UART_LSR_RDR)) {
-					uint8_t Data = UART_ReceiveByte(UART_MS);
+	if ((((LPC_UART_TypeDef *)UART_RF)->LSR & UART_LSR_RDR)) {
+					uint8_t Data = UART_ReceiveByte(UART_RF);
 					if(Data == 0x44);
 							pinToggle(&LED_5);
 					parseByte(Data);
@@ -609,7 +696,7 @@ void UART_MS_IRQHandler(void)
 
 	// Transmit Holding Empty
 	if (tmp == UART_IIR_INTID_THRE){
-			UART_IntTransmit((LPC_UART_TypeDef *)UART_LPC_MS);
+			UART_IntTransmit((LPC_UART_TypeDef *)UART_LPC_RF);
 	}
 }
 
@@ -716,7 +803,7 @@ void UART_SetFreq_IRQHandler(void)
 	// Receive Data Available or Character time-out
 	if ((tmp == UART_IIR_INTID_RDA) || (tmp == UART_IIR_INTID_CTI)){
 			if ((UART_SetFreq->LSR & UART_LSR_RDR)) {
-						//Data_Trans_u.stc.Sensors_UARTs_Data[2] = UART_ReceiveByte(UART_Sensor_2);
+				UART_IntReceive((LPC_UART_TypeDef *)UART_SetFreq);
 			}	
 	}
 

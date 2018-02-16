@@ -448,6 +448,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\lpc17xx_wdt.c</FilePath>
             </File>
+            <File>
+              <FileName>Messaging_Freq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Messaging_Freq.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

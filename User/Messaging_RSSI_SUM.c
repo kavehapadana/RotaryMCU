@@ -13,7 +13,6 @@ typedef enum
 	msgGOT_PAYLOAD,
 } Message_Status_RSSI_SUM_t;
 
-
 char Receive_Check_Sum_RSSI_SUM;
 uint32_t Message_Index_RSSI_SUM;
 
