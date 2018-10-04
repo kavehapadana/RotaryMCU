@@ -331,7 +331,7 @@ void parse_Message(uint8_t* msg, uint8_t Message_Length, uint8_t Message_ID)
 				break;
 				case RotMCU_Freq:
 				{
-						uint8_t MCU_FreqData[20] = {0};
+					uint8_t MCU_FreqData[20] = {0};
 					{
 						int i = 0;
 						for(i = 0; i < Message_Length - 1; i++)
@@ -391,17 +391,34 @@ void Init_Timer0(void)
 	// To start timer 0
 	TIM_Cmd(LPC_TIM0,ENABLE);
 }
-	uint8_t u8test = 0;
+
+uint8_t u8test = 0;
+char TestDopp;
+int Dopp = 0;
+int cntDataPacket = 0;
 void parse_Message_RSSI_SUM(char* msg)
 {		
+		cntDataPacket++;
 		memcpy(Data_Trans_u.stc.RSSI_SUM_UART_Data,msg,3);
-		Data_Trans_u.stc.DopplerData = (msg[3] + msg[4]*256 + msg[5]*65536)/1568;
+		TestDopp = (msg[3] + msg[4]*256 + msg[5]*65536)/1568;
+		Dopp = msg[5] ;
+		Dopp <<=8;
+		Dopp |= msg[4] ;
+		Dopp <<=8;
+		Dopp |= msg[3] ;
+		Dopp <<=8;
+	  Dopp /= 1568;	
+	  Dopp /= 256;
+	//Dopp *=7656;
+    Data_Trans_u.stc.DopplerData =	Dopp;
+		TestDopp = Data_Trans_u.stc.DopplerData;
+		
 		Data_Trans_u.stc.bitWatch = unsetMask(Data_Trans_u.stc.bitWatch,we_Rot_COM_SUM);
 	  cnt_e_com_SUM = 0;
 		u8test = unsetMask(Data_Trans_u.stc.bitWatch,we_Rot_COM_SUM);
 }
 
-void parse_Message_RSSI_Delta(char* msg)
+void parse_Message_RSSI_Delta(char* msg) // kaveh doppler: change to unsigned ??
 {
 		memcpy(Data_Trans_u.stc.RSSI_Delta_UART_Data,msg,3);
 		cnt_e_com_Delta = 0;	

@@ -420,11 +420,13 @@ ARM Macro Assembler    Page 7
   287 0000001C                 END
               00000000 
               00000000 
-Command Line: --debug --xref --cpu=Cortex-M3 --apcs=interwork --depend=..\build
-\startup_lpc17xx.d -o..\build\startup_lpc17xx.o -IE:\Gits\RotaryMCU\Project_Fil
-es\RTE -ID:\install\Keil_v5\ARM\PACK\ARM\CMSIS\3.20.4\CMSIS\Include -ID:\instal
-l\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\1.0.0\Device\Include --predefine="__MICROLI
-B SETA 1" --list=.\startup_lpc17xx.lst RTE\Device\LPC1768\startup_LPC17xx.s
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M3 --apcs=interw
+ork --depend=..\build\startup_lpc17xx.d -o..\build\startup_lpc17xx.o -I.\RTE\De
+vice\LPC1768 -I.\RTE\_Rotatory_MCU -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\
+Include -IC:\Keil_v5\ARM\PACK\Keil\LPC1700_DFP\2.4.0\Device\Include --predefine
+="__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE
+_ SETA 1" --predefine="LPC175x_6x SETA 1" --list=.\startup_lpc17xx.lst RTE\Devi
+ce\LPC1768\startup_LPC17xx.s
 
 
 
@@ -1058,4 +1060,4 @@ Symbol: __main
       At line 131 in file RTE\Device\LPC1768\startup_LPC17xx.s
 Comment: __main used once
 2 symbols
-397 symbols in table
+400 symbols in table

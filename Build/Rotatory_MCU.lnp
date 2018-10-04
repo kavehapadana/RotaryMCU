@@ -23,6 +23,6 @@
 "..\build\startup_lpc17xx.o"
 "..\build\system_lpc17xx.o"
 --library_type=microlib --strict --scatter "..\Build\Rotatory_MCU.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Rotatory_MCU.map" -o ..\Build\Rotatory_MCU.axf
